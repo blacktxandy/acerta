@@ -6,11 +6,66 @@
   height: 10vmin;
   pointer-events: none;
 }
+.logo-acerta {
+  height: 3rem;
+  pointer-events: none;
+  margin-bottom: 2rem;
+}
+.round{
+  border-radius: 1rem;
+  padding: 2em;
+}
+h2{
+  color: white!important;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-pulse infinite 1s cubic-bezier(0,1.41,1,.46);
   }
+}
+
+nav{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 10vh;
+  color: white;
+}
+
+.nav-links{
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+}
+
+.is-acerta-orange{
+ background-color: #F79028!important;
+ transition: 0.25s;
+}
+.is-acerta-orange:hover{
+  background-color: #ffa64d!important;
+ }
+.is-acerta-orange:active{
+  background-color: #fc8815!important;
+ }
+
+.is-acerta-grey{
+ background-color: #989898!important;
+ transition: 0.25s;
+}
+.is-acerta-grey:hover{
+  background-color: #808080!important;
+ }
+.is-acerta-grey:active{
+  background-color: #a1a1a1!important;
+ }
+
+.button{
+  border-width: 0!important;
+  font-weight: 700;
 }
 
 .App-header {
