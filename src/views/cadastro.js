@@ -2,19 +2,21 @@ import logo from "../logo.svg";
 import "../bulma.min.css";
 import "../App.css";
 import React, { useState, useEffect } from "react";
-function Cadastro({match}) {
-    useEffect(() => {
-        fetchLead();
-      }, []);
-    
-      const [lead, setLead] = useState({});
-    
-      const fetchLead = async () => {
-        const data = await fetch(`http://localhost:3010/leads/${match.params.id}`);
-        const lead = await data.json();
-        console.log(lead)
-        setLead(lead);
-      };
+function Cadastro({ match }) {
+  useEffect(() => {
+    fetchLead();
+  }, []);
+
+  const [lead, setLead] = useState({});
+
+  const fetchLead = async () => {
+    if (match.params.id) {
+      const data = await fetch(`http://localhost:3010/leads/${match.params.id}`);
+      const lead = await data.json();
+      console.log(lead);
+      setLead(lead);
+    }
+  };
   return (
     <div className="container is-max-desktop">
       <img src={logo} className="logo-acerta" alt="logo" />
@@ -52,9 +54,7 @@ function Cadastro({match}) {
       </div>
       <div className="panel">
         <a className="panel-block">
-          <span>
-            {lead.nome}
-          </span>
+          <span>{lead.nome}</span>
         </a>
       </div>
     </div>

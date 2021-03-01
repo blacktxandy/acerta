@@ -5,12 +5,25 @@ import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
+import InputMask from "react-input-mask";
 
 function Consulta() {
   useEffect(() => {
     fetchItems();
   }, []);
-
+  const askForDelete = async (p) => {
+    console.log(p);
+    if (window.confirm(`Esta ação excluirá o lead ${p.nome}.`)) {
+      fetch(`http://localhost:3010/leads/${p.id}`, { method: "DELETE" }).then((r) => {
+        if (r.status == 200) {
+          window.alert("Lead excluído com sucesso.");
+          fetchItems();
+        } else {
+          window.alert("Ocorreu um erro na exlusão deste lead.");
+        }
+      });
+    }
+  };
   const [leads, setLeads] = useState([]);
 
   const fetchItems = async () => {
@@ -18,7 +31,31 @@ function Consulta() {
     const leads = await data.json();
     setLeads(leads);
   };
-  
+  const formatCpf = (cpf) => {
+    var r = "";
+    for (let ch = 0; ch < cpf.length; ch++) {
+      switch (ch) {
+        case 2:
+          r += cpf.charAt(ch) + ".";
+          break;
+        case 5:
+          r += cpf.charAt(ch) + ".";
+          break;
+        case 8:
+          r += cpf.charAt(ch) + "-";
+          break;
+        default:
+          r += cpf.charAt(ch);
+          break;
+      }
+    }
+    return r;
+  };
+  const unformatCpf = (cpf) => {
+    var r = cpf.replace(/[.]/g, "");
+    return r.replace("-", "");
+  };
+
   return (
     <div className="container is-max-desktop">
       <img src={logo} className="logo-acerta" alt="logo" />
@@ -33,12 +70,13 @@ function Consulta() {
             return errors;
           }}
           onSubmit={async (values, { setSubmitting }) => {
-
-            const data = await fetch(`http://localhost:3010/leads/${values.cpf ? values.nome ? "?cpf_like="+values.cpf+"&nome_like="+values.nome:"?cpf_like="+values.cpf : values.nome ? "?nome_like="+values.nome:""}`);
+            var cpf = unformatCpf(values.cpf);
+            var nome = values.nome;
+            console.log(cpf);
+            const data = await fetch(`http://localhost:3010/leads/${cpf ? (nome ? "?cpf_like=" + cpf + "&nome_like=" + nome : "?cpf_like=" + cpf) : nome ? "?nome_like=" + nome : ""}`);
             const lead = await data.json();
             setLeads(lead);
-            setSubmitting(false)
-
+            setSubmitting(false);
           }}
         >
           {({
@@ -66,7 +104,7 @@ function Consulta() {
                   <div className="field">
                     <label className="label">CPF</label>
                     <div className="control">
-                      <input className="input" type="cpf" name="cpf" onChange={handleChange} onBlur={handleBlur} value={values.cpf} />
+                      <InputMask className="input" name="cpf" mask="999.999.999-99" maskChar={null} alwaysShowMask={false} onChange={handleChange} onBlur={handleBlur} value={values.cpf} />
                       {errors.cpf && touched.cpf && errors.cpf}
                     </div>
                   </div>
@@ -104,18 +142,22 @@ function Consulta() {
             {leads.map((lead) => (
               <tr key={lead.id}>
                 <th>
-                  <span className="icon clickable">
-                    <Link to={`/cadastro/${lead.id}`}>
+                  <Link to={`/cadastro/${lead.id}`}>
+                    <span className="icon clickable">
                       <BsPencilSquare />
-                    </Link>
-                  </span>
+                    </span>
+                  </Link>
                   <span className="icon clickable">
-                    <BsTrash />
+                    <BsTrash
+                      onClick={() => {
+                        askForDelete(lead);
+                      }}
+                    />
                   </span>
                 </th>
                 <td>{lead.email}</td>
                 <td>{lead.nome}</td>
-                <td>{lead.cpf}</td>
+                <td>{formatCpf(lead.cpf)}</td>
               </tr>
             ))}
           </tbody>

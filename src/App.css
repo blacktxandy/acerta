@@ -21,9 +21,10 @@
 }
 .clickable{
   cursor: pointer;
+  color: #020202!important;
 }
 .clickable:hover{
-  color: #61dafb;
+  color: #3b86cc!important;
 }
 .round{
   border-radius: 1rem;
