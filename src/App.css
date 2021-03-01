@@ -11,6 +11,20 @@
   pointer-events: none;
   margin-bottom: 2rem;
 }
+.no-background{
+  background-color: #224D74!important;
+  
+}
+.no-background th{
+  color: white!important;
+  font-weight: normal;
+}
+.clickable{
+  cursor: pointer;
+}
+.clickable:hover{
+  color: #61dafb;
+}
 .round{
   border-radius: 1rem;
   padding: 2em;
