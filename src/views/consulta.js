@@ -4,6 +4,7 @@ import "../App.css";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { Formik } from "formik";
 
 function Consulta() {
   useEffect(() => {
@@ -11,52 +12,76 @@ function Consulta() {
   }, []);
 
   const [leads, setLeads] = useState([]);
-  const cpf = useState('');
-  const nome = useState('');
+
   const fetchItems = async () => {
     const data = await fetch("http://localhost:3010/leads");
     const leads = await data.json();
     setLeads(leads);
   };
-  const fetchFilter = async () => {
-    const data = await fetch(`http://localhost:3010/leads${cpf ? "?cpf=" : ""}${cpf}${nome && !cpf ? "?nome=" : nome && cpf ? "&nome" : ""}${nome}`);
-    const leads = await data.json();
-    if (leads.id) {
-      const leadArr = [leads];
-      setLeads(leadArr);
-    }
-  };
+  
   return (
     <div className="container is-max-desktop">
       <img src={logo} className="logo-acerta" alt="logo" />
       <h2 className="subtitle is-4">Consulta de Leads</h2>
       <div className="notification round mb-3">
         <h3 className="title is-5">Filtros</h3>
-        <div className="columns is-desktop">
-          <div className="column">
-            <div className="field">
-              <label className="label">Nome</label>
-              <div className="control">
-                <input className="input" value={nome} type="text" />
+
+        <Formik
+          initialValues={{ nome: "", cpf: "" }}
+          validate={(values) => {
+            const errors = {};
+            return errors;
+          }}
+          onSubmit={async (values, { setSubmitting }) => {
+
+            const data = await fetch(`http://localhost:3010/leads/${values.cpf ? values.nome ? "?cpf_like="+values.cpf+"&nome_like="+values.nome:"?cpf_like="+values.cpf : values.nome ? "?nome_like="+values.nome:""}`);
+            const lead = await data.json();
+            setLeads(lead);
+            setSubmitting(false)
+
+          }}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            /* and other goodies */
+          }) => (
+            <form onSubmit={handleSubmit}>
+              <div className="columns is-desktop">
+                <div className="column">
+                  <div className="field">
+                    <label className="label">Nome</label>
+                    <div className="control">
+                      <input type="text" className="input" name="nome" onChange={handleChange} onBlur={handleBlur} value={values.nome} />
+                      {errors.nome && touched.nome && errors.nome}
+                    </div>
+                  </div>
+                </div>
+                <div className="column">
+                  <div className="field">
+                    <label className="label">CPF</label>
+                    <div className="control">
+                      <input className="input" type="cpf" name="cpf" onChange={handleChange} onBlur={handleBlur} value={values.cpf} />
+                      {errors.cpf && touched.cpf && errors.cpf}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="column">
-            <div className="field">
-              <label className="label">CPF</label>
-              <div className="control">
-                <input className="input" value={cpf} type="text" />
+              <div className="field is-grouped is-grouped-right">
+                <div className="control">
+                  <button type="submit" disabled={isSubmitting} className="button is-acerta-orange">
+                    Filtrar
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="field is-grouped is-grouped-right">
-          <div className="control">
-            <button onClick={fetchFilter} className="button is-acerta-orange">
-              Filtrar
-            </button>
-          </div>
-        </div>
+            </form>
+          )}
+        </Formik>
       </div>
       <div className="field is-grouped is-grouped-left">
         <div className="control">
