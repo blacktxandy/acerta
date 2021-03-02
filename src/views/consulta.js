@@ -1,56 +1,26 @@
 import logo from "../logo.svg";
-import "../bulma.min.css";
-import "../App.css";
-import { BsPencilSquare, BsTrash } from "react-icons/bs";
-import { Link } from "react-router-dom";
+
 import React, { useState, useEffect } from "react";
 import { Formik } from "formik";
 import InputMask from "react-input-mask";
+import Table from "../components/table";
+import NewLeadButton from "../components/newLeadButton";
+import HeadComponent from "../components/headComponent";
 
 function Consulta() {
   useEffect(() => {
     fetchItems();
   }, []);
-  const askForDelete = async (p) => {
-    console.log(p);
-    if (window.confirm(`Esta ação excluirá o lead ${p.nome}.`)) {
-      fetch(`http://localhost:3010/leads/${p.id}`, { method: "DELETE" }).then((r) => {
-        if (r.status == 200) {
-          window.alert("Lead excluído com sucesso.");
-          fetchItems();
-        } else {
-          window.alert("Ocorreu um erro na exlusão deste lead.");
-        }
-      });
-    }
-  };
+ 
+  
   const [leads, setLeads] = useState([]);
 
   const fetchItems = async () => {
-    const data = await fetch("http://localhost:3010/leads");
+    const data = await fetch("http://localhost:3333/leads");
     const leads = await data.json();
     setLeads(leads);
   };
-  const formatCpf = (cpf) => {
-    var r = "";
-    for (let ch = 0; ch < cpf.length; ch++) {
-      switch (ch) {
-        case 2:
-          r += cpf.charAt(ch) + ".";
-          break;
-        case 5:
-          r += cpf.charAt(ch) + ".";
-          break;
-        case 8:
-          r += cpf.charAt(ch) + "-";
-          break;
-        default:
-          r += cpf.charAt(ch);
-          break;
-      }
-    }
-    return r;
-  };
+  
   const unformatCpf = (cpf) => {
     var r = cpf.replace(/[.]/g, "");
     return r.replace("-", "");
@@ -58,8 +28,7 @@ function Consulta() {
 
   return (
     <div className="container is-max-desktop">
-      <img src={logo} className="logo-acerta" alt="logo" />
-      <h2 className="subtitle is-4">Consulta de Leads</h2>
+      <HeadComponent title="Consulta de Leads"/>
       <div className="notification round mb-3">
         <h3 className="title is-5">Filtros</h3>
 
@@ -73,7 +42,7 @@ function Consulta() {
             var cpf = unformatCpf(values.cpf);
             var nome = values.nome;
             console.log(cpf);
-            const data = await fetch(`http://localhost:3010/leads/${cpf ? (nome ? "?cpf_like=" + cpf + "&nome_like=" + nome : "?cpf_like=" + cpf) : nome ? "?nome_like=" + nome : ""}`);
+            const data = await fetch(`http://localhost:3333/leads/${cpf ? (nome ? "?cpf_like=" + cpf + "&nome_like=" + nome : "?cpf_like=" + cpf) : nome ? "?nome_like=" + nome : ""}`);
             const lead = await data.json();
             setLeads(lead);
             setSubmitting(false);
@@ -121,48 +90,8 @@ function Consulta() {
           )}
         </Formik>
       </div>
-      <div className="field is-grouped is-grouped-left">
-        <div className="control">
-          <Link to="/cadastro">
-            <button className="button is-acerta-orange">Novo Lead</button>
-          </Link>
-        </div>
-      </div>
-      <div className="table-container pb-4">
-        <table className="table is-hoverable is-fullwidth">
-          <thead>
-            <tr className="no-background">
-              <th></th>
-              <th>Email</th>
-              <th>Nome</th>
-              <th>CPF</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leads.map((lead) => (
-              <tr key={lead.id}>
-                <th>
-                  <Link to={`/cadastro/${lead.id}`}>
-                    <span className="icon clickable">
-                      <BsPencilSquare />
-                    </span>
-                  </Link>
-                  <span className="icon clickable">
-                    <BsTrash
-                      onClick={() => {
-                        askForDelete(lead);
-                      }}
-                    />
-                  </span>
-                </th>
-                <td>{lead.email}</td>
-                <td>{lead.nome}</td>
-                <td>{formatCpf(lead.cpf)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <NewLeadButton/>
+      <Table leads={leads} reloadTable={fetchItems}/>
     </div>
   );
 }

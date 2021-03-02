@@ -18,6 +18,7 @@
 .no-background th{
   color: white!important;
   font-weight: normal;
+  border-color: transparent;
 }
 .clickable{
   cursor: pointer;
@@ -94,8 +95,27 @@ nav{
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+
+@media
+only screen and (max-width: 1023px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+  tbody tr{
+    border: 2px solid #224D74;
+  }
+  tbody tr th .icon{
+    font-size: 2em;
+    margin: 5px 15px;
+    text-align: center;
+  }
+  td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+  }
+  
+  
 }
 
 @keyframes App-logo-pulse {
