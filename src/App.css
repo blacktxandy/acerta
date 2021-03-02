@@ -1,11 +1,4 @@
-.App {
-  text-align: center;
-}
 
-.App-logo {
-  height: 10vmin;
-  pointer-events: none;
-}
 .logo-acerta {
   height: 3rem;
   pointer-events: none;
@@ -35,28 +28,6 @@ h2{
   color: white!important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-pulse infinite 1s cubic-bezier(0,1.41,1,.46);
-  }
-}
-
-nav{
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  min-height: 10vh;
-  color: white;
-}
-
-.nav-links{
-  width: 50%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  list-style: none;
-}
-
 .is-acerta-orange{
  background-color: #F79028!important;
  transition: 0.25s;
@@ -84,16 +55,6 @@ nav{
   font-weight: 700;
 }
 
-.App-header {
-  background-color: #224D74;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
 
 
 @media
